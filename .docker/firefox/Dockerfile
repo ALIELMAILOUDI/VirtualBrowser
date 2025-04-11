@@ -4,7 +4,7 @@ FROM $BASE_IMAGE
 ARG SRC_URL="https://ftp.mozilla.org/pub/firefox/releases/121.0/linux-x86_64/en-US/firefox-121.0.tar.bz2"
 
 RUN apt-get update
-RUN apt-get install -y --no-install-recommends openbox xz-utils bzip2 libgtk-3-0 wget
+RUN apt-get install -y --no-install-recommends openbox xz-utils bzip2 libgtk-3-0 wget file
 RUN wget -O /tmp/firefox-setup.tar.bz2 "${SRC_URL}"
 RUN file /tmp/firefox-setup.tar.bz2
 RUN mkdir -p /usr/lib/firefox
@@ -22,3 +22,4 @@ COPY autoconfig.js /usr/lib/firefox/defaults/pref/autoconfig.js
 COPY policies.json /usr/lib/firefox/distribution/policies.json
 COPY profiles.ini /root/.mozilla/firefox/profiles.ini
 COPY openbox.xml /etc/neko/openbox.xml
+

@@ -12,17 +12,20 @@ RUN set -eux; \
     tar -xjf /tmp/firefox-setup.tar.bz2 -C /usr/lib; \
     rm -f /tmp/firefox-setup.tar.bz2; \
     ln -s /usr/lib/firefox/firefox /usr/bin/firefox; \
-    useradd -m neko; \
+    \
+    # ✅ Créer user neko s'il n'existe pas
+    if ! id -u neko > /dev/null 2>&1; then useradd -m neko; fi; \
     mkdir -p /home/neko/.mozilla/firefox/profile.default/extensions; \
-    chown -R neko:neko /home/neko/.mozilla/firefox/profile.default; \
+    chown -R neko:neko /home/neko/.mozilla; \
+    \
     apt-get --purge autoremove -y xz-utils bzip2; \
     apt-get clean -y; \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/*
-
-# Copier les fichiers de configuration
+    
+# Copier les fichiers de config
 COPY supervisord.conf /etc/neko/supervisord/firefox.conf
 COPY neko.js /usr/lib/firefox/mozilla.cfg
 COPY autoconfig.js /usr/lib/firefox/defaults/pref/autoconfig.js
 COPY policies.json /usr/lib/firefox/distribution/policies.json
-COPY --chown=neko profiles.ini /home/neko/.mozilla/firefox/profiles.ini
+COPY --chown=neko:neko profiles.ini /home/neko/.mozilla/firefox/profiles.ini
 COPY openbox.xml /etc/neko/openbox.xml
